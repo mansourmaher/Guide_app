@@ -20,6 +20,14 @@ import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 import {
   Form,
   FormControl,
@@ -31,9 +39,11 @@ import {
 import { Tag, Users } from "lucide-react";
 import OffreTags from "./tags";
 import { table } from "console";
+import { cn } from "@/lib/utils";
 
 function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
   const updateSecondaryDetails = () => {
+    console.log("datra chnaged");
     const data = form.getValues();
     onSecondaryDetailsChange(data);
   };
@@ -44,10 +54,18 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
       .min(0, { message: "Number of places must be greater than 0" }),
     category: z.string().min(1, { message: "Please select a category" }),
     tags: z.array(z.string()),
+    startDate: z.date({
+      required_error: "Start date is required",
+    }),
+    endDate: z.date({
+      required_error: "End date is required",
+    }),
   });
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
+      startDate: new Date(),
+      endDate: new Date(),
       price: 0,
       number_of_places: 0,
       category: "",
@@ -77,6 +95,96 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
             className="space-y-4"
             onChange={updateSecondaryDetails}
           >
+            <div className="flex space-x-4">
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Start Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={(date) => {
+                            field.onChange;
+                            form.setValue("startDate", date!);
+                            updateSecondaryDetails();
+                          }}
+                          disabled={(date) => date < new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="endDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>End Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={(date) => {
+                            field.onChange;
+                            form.setValue("endDate", date!);
+                            updateSecondaryDetails();
+                          }}
+                          disabled={(date) =>
+                            date < form.getValues("startDate")
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             {/* Price Field */}
             <div className="space-y-2">
               <FormField
@@ -184,7 +292,10 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
             <Separator />
 
             {/* Certificate Field */}
-            <OffreTags onTagsAdd={onTagsAdd} updateSecondaryDetails={updateSecondaryDetails} />
+            <OffreTags
+              onTagsAdd={onTagsAdd}
+              updateSecondaryDetails={updateSecondaryDetails}
+            />
           </form>
         </Form>
       </CardContent>

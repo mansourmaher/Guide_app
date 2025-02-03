@@ -12,7 +12,7 @@ export default function RootLayout({
   return (
     <div className="h-full flex ">
       <Navbar />
-      <div className="w-screen bg-slate-50 ">{children}</div>
+      <div className="w-screen ">{children}</div>
     </div>
   );
 }

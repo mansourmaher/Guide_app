@@ -6,8 +6,6 @@ import { Container } from "./Container";
 import { Logo } from "./Logo";
 import { NavLink } from "./NavLink";
 
-
-
 export function Header() {
   return (
     <header className="py-2 border-b-2 mb-4 fixed inset-x-0 bg-white z-50">
@@ -18,7 +16,7 @@ export function Header() {
               <Logo className="h-10 w-auto" />
             </Link>
             <div className="hidden md:flex md:gap-x-6">
-              <NavLink href="/">Home</NavLink>
+              <NavLink href="/guide/myoffers">Home</NavLink>
               <NavLink href="/explore">Explore</NavLink>
               <NavLink href="#pricing">Pricing</NavLink>
             </div>
