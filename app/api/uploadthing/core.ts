@@ -22,6 +22,9 @@ export const ourFileRouter = {
     offreImages:f({image:{maxFileSize:"4MB",maxFileCount:6}})
     .middleware(()=>handelAuth())
     .onUploadComplete(()=>{}),
+    profileImage:f({image:{maxFileSize:"4MB",maxFileCount:6}})
+    .middleware(()=>handelAuth())
+    .onUploadComplete(()=>{}),
     
 } satisfies FileRouter;
  

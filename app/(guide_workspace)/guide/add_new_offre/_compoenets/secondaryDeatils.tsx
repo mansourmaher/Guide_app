@@ -273,12 +273,30 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="programming">
-                            Programming
+                          <SelectItem
+                            value="Historical & Cultural Tours
+"
+                          >
+                            Historical & Cultural Tours
                           </SelectItem>
-                          <SelectItem value="design">Design</SelectItem>
-                          <SelectItem value="business">Business</SelectItem>
-                          <SelectItem value="marketing">Marketing</SelectItem>
+                          <SelectItem
+                            value="Food & Culinary Tours
+"
+                          >
+                            Food & Culinary Tours
+                          </SelectItem>
+                          <SelectItem
+                            value="Adventure & Outdoor Tours
+"
+                          >
+                            Adventure & Outdoor Tours
+                          </SelectItem>
+                          <SelectItem
+                            value="Wildlife & Nature Tours
+"
+                          >
+                            Wildlife & Nature Tours
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>

@@ -17,7 +17,7 @@ export function Header() {
             </Link>
             <div className="hidden md:flex md:gap-x-6">
               <NavLink href="/guide/myoffers">Home</NavLink>
-              <NavLink href="/explore">Explore</NavLink>
+              <NavLink href="/guide/add_new_offre">Add New Offer</NavLink>
               <NavLink href="#pricing">Pricing</NavLink>
             </div>
           </div>
