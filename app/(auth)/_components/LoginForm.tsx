@@ -28,7 +28,7 @@ import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface AxiosSignInResponse {
-  id: string;
+  _id: string;
   email: string;
   access_token: string;
   tokenType: string;
@@ -48,7 +48,6 @@ function LoginForm() {
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: "",
-
       password: "",
     },
   });
@@ -95,10 +94,12 @@ function LoginForm() {
       if (response.status === 200) {
         setIsloading(false);
         console.log("You are logged in");
+        console.log(response.data);
         setSucces("You are logged in");
         cookies.set("accessToken", response.data.access_token, {
           secure: true,
         });
+        cookies.set("id", response.data._id, { secure: true });
         router.push("/setup-account");
       }
     } catch (error: any) {

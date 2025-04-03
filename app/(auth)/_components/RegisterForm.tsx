@@ -36,7 +36,9 @@ export const RegisterForm = () => {
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
-    defaultValues: {},
+    defaultValues: {
+      role: "GUIDE",
+    },
   });
 
   const onSubmit = async (values: z.infer<typeof RegisterSchema>) => {
@@ -49,6 +51,7 @@ export const RegisterForm = () => {
         "http://localhost:4000/auth/register",
         values
       );
+      console.log(response);
       if (response.status === 200) {
         setSuccess("Account created successfully");
         setIsloading(false);

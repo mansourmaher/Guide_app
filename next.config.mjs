@@ -26,6 +26,7 @@ const nextConfig = {
       "utfs.io",
       "avatars.githubusercontent.com",
       "lh3.googleusercontent.com",
+      "www.francisdemange.net",
     ],
   },
   experimental: {

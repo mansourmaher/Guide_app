@@ -1,14 +1,15 @@
 "use client";
-import React, { useState } from "react";
-import OffreDetails from "./offredetails";
-import OffreSeconaryDeatils from "./secondaryDeatils";
 import { Button } from "@/components/ui/button";
 import AxiosInstance from "@/lib/axiosInstance";
-import { CountrySelect } from "./country-select";
 
 import { motion } from "framer-motion";
-import { LocateFixed, MoveLeft, Save } from "lucide-react";
-import { toast, Toaster } from "sonner";
+import { Edit, LocateFixed, MoveLeft, Save } from "lucide-react";
+
+import React, { useEffect, useState } from "react";
+import EditOfferDetail from "./EditOfferDetail";
+import EditoFerSecondaryDeatils from "./EditOfeerSecondaryDeatils";
+import { CountrySelect } from "../../add_new_offre/_compoenets/country-select";
+import { toast } from "sonner";
 
 export interface Latlng {
   lat: number;
@@ -29,12 +30,17 @@ const steps: StepsType[] = [
   },
 ];
 
-function AddNewOffre() {
+interface EditOfferProps {
+  offerId: string;
+}
+
+function EditOffer({ offerId }: EditOfferProps) {
   const [offerDetails, setOfferDetails] = useState({
     title: "",
     description: "",
     imagesUrls: [],
   });
+
   const [offerSecondaryDetails, setOfferSecondaryDetails] = useState({
     price: 0,
     number_of_places: 0,
@@ -43,7 +49,43 @@ function AddNewOffre() {
     startDate: new Date(),
     endDate: new Date(),
   });
+
   const [latlng, setLatlng] = useState<Latlng>({ lat: 0, lng: 0 });
+  useEffect(() => {
+    const fetchSpecificOffer = async () => {
+      try {
+        const res = await AxiosInstance.get(`/offres/${offerId}`);
+  
+        // setOfferDetails((prev) => ({
+        //   ...prev,
+        //   title: res.data.titre,
+        //   description: res.data.description,
+        //   imagesUrls: res.data.photos,
+        // }));
+  
+        setOfferSecondaryDetails((prev) => ({
+          ...prev,
+          price: res.data.prix,
+          number_of_places: res.data.nombrePersonnesMax,
+          category: res.data.categorie,
+          tags: res.data.tags,
+          startDate: res.data.startDate,
+          endDate: res.data.endDate,
+        }));
+  
+        setLatlng((prev) => ({
+          ...prev,
+          lat: res.data.location[0],
+          lng: res.data.location[1],
+        }));
+      } catch (err) {
+        console.error(err);
+      }
+    };
+  
+    fetchSpecificOffer();
+  }, [offerId]); 
+  
 
   const [previousStep, setPreviousStep] = React.useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -51,42 +93,8 @@ function AddNewOffre() {
   const delta = currentStep - previousStep;
 
   const handelSubmit = async () => {
-    
-    if (
-      offerDetails.imagesUrls.length === 0 ||
-      offerDetails.title === "" ||
-      offerDetails.description === ""
-    ) {
-      toast.error("Please fill all the required fields");
-      return;
-    }
-    if (
-      offerSecondaryDetails.category === "" ||
-      offerSecondaryDetails.price === 0 ||
-      offerSecondaryDetails.number_of_places === 0
-    ) {
-      toast.error("Please fill all the required fields");
-      return;
-    }
-    if (latlng.lat === 0 || latlng.lng === 0) {
-      toast.error("Please select the location");
-      return;
-    }
-
-    if (offerSecondaryDetails.startDate > offerSecondaryDetails.endDate) {
-      toast.error("Start date should be less than end date");
-      return;
-    }
-    if (offerSecondaryDetails.price <= 0) {
-      toast.error("Price should be greater than 0");
-      return;
-    }
-    if (offerSecondaryDetails.number_of_places <= 0) {
-      toast.error("Number of places should be greater than 0");
-      return;
-    }
-
-    const res = await AxiosInstance.post("/offres", {
+    const res = await AxiosInstance.put(`/offres`, {
+      _id: offerId,
       titre: offerDetails.title,
       description: offerDetails.description,
       prix: offerSecondaryDetails.price,
@@ -101,12 +109,12 @@ function AddNewOffre() {
       photos: offerDetails.imagesUrls,
     });
     if (res.status === 201) {
-      toast.success("Offer added successfully");
+      toast.success("Offer updated successfully");
     } else {
-      toast.error("An error occured");
+      toast.error("An error occured while updating the offer");
     }
-    
   };
+
   return (
     <div className="container mx-auto py-6 space-y-8 mt-16">
       {currentStep === 0 && (
@@ -117,7 +125,10 @@ function AddNewOffre() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="col-span-2"
           >
-            <OffreDetails onDetailsChange={setOfferDetails} />
+            <EditOfferDetail
+              onDetailsChange={setOfferDetails}
+              initialDetails={offerDetails}
+            />
           </motion.div>
 
           <motion.div
@@ -127,14 +138,15 @@ function AddNewOffre() {
             className="col-span-1"
           >
             <div className="flex flex-col space-y-2">
-              <OffreSeconaryDeatils
+              <EditoFerSecondaryDeatils
                 onSecondaryDetailsChange={setOfferSecondaryDetails}
+                initialValue={offerSecondaryDetails}
               />
               <div className="flex flex-row justify-between gap-5">
                 <Button
-                  onClick={handelSubmit}
                   variant={"primary"}
                   className="w-full"
+                  onClick={handelSubmit}
                 >
                   <span className="flex flex-row items-center gap-2">
                     <Save size={24} className="text-white" />
@@ -178,7 +190,7 @@ function AddNewOffre() {
                 <span className="">Back</span>
               </span>
             </Button>
-            <Button onClick={handelSubmit} variant={"primary"}>
+            <Button variant={"primary"}>
               <span className="flex flex-row items-center gap-2">
                 <Save size={24} className="text-white" />
                 <span className="">Save the offer</span>
@@ -191,4 +203,4 @@ function AddNewOffre() {
   );
 }
 
-export default AddNewOffre;
+export default EditOffer;

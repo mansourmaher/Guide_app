@@ -10,9 +10,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-full flex ">
+    <div className=" flex h-screen ">
       <Navbar />
-      <div className="w-screen bg-slate-50  ">{children}</div>
+      <div className="w-screen bg-slate-50 ">{children}</div>
     </div>
   );
 }

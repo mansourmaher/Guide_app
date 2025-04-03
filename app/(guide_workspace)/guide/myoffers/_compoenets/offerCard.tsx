@@ -3,6 +3,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 
 interface TourCardProps {
+  id:string
   title: string;
   image: string;
   price: number;
@@ -12,6 +13,7 @@ interface TourCardProps {
 }
 
 export default function TourCard({
+  id,
   title,
   image,
   price,
