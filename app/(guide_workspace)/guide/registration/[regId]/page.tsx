@@ -114,7 +114,7 @@ function Page({ params }: { params: { regId: string } }) {
       <div className="flex justify-center items-center h-screen flex-col">
         <AlertCircle className="w-16 h-16 text-gray-400" />
         <h2 className="text-xl font-semibold text-gray-700 mt-4">
-          "No data available"
+          No data available
         </h2>
         <p className="text-gray-500 mt-2">
           Try refreshing or check back later.
@@ -154,7 +154,7 @@ function Page({ params }: { params: { regId: string } }) {
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">
-            Registrations for the event "{offerDetails?.titre}"
+            Registrations for the event {offerDetails?.titre}
           </CardTitle>
           {offerDetails && (
             <div className="text-sm text-muted-foreground">

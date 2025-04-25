@@ -223,7 +223,7 @@ export const RegisterForm = () => {
                 </p>
 
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  After 30 days, you'll need to subscribe to one of our plans to
+                  After 30 days, you ll need to subscribe to one of our plans to
                   maintain access to all features.
                 </p>
               </div>
