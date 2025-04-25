@@ -21,8 +21,9 @@ import { SlimLayout } from "./SlimLayout";
 import { Logo } from "./Logo";
 import { FormSucces } from "./Form-succes";
 import { FormError } from "./Form-error";
-import axios, { type AxiosError } from "axios";
+
 import { Loader } from "lucide-react";
+import axios from "axios";
 
 interface AxiosSignInResponse {
   status: number;
@@ -59,7 +60,7 @@ export const RegisterForm = () => {
     } catch (error: any) {
       console.log(error);
       setIsloading(false);
-      const axiosError = error as AxiosError;
+      const axiosError = error as any;
       if (axiosError.response?.status === 500) {
         setError("An error occurred");
       } else if (axiosError.response?.status === 400) {

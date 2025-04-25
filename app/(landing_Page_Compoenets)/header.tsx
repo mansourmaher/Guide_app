@@ -20,7 +20,6 @@ function Header() {
   const router = useRouter();
 
   useEffect(() => {
-    
     const urlParams = new URLSearchParams(window.location.search);
     const sid = urlParams.get("session_id");
     const tier = urlParams.get("tier");
@@ -44,7 +43,6 @@ function Header() {
         .then((response) => response.json())
         .then((data) => {
           if (data.verified) {
-           
             window.history.replaceState(
               {},
               document.title,
@@ -126,14 +124,14 @@ function Header() {
               </>
             )}
           </div>
-
-          <Button
-            // onClick={() => router.push("/login")}
-            onClick={testStripeButton}
-            className="rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm sm:px-5 sm:text-base transition duration-200 ease-in-out"
-          >
-            Sign In
-          </Button>
+          {!accessToken && (
+            <Button
+              onClick={() => router.push("/login")}
+              className="rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm sm:px-5 sm:text-base transition duration-200 ease-in-out"
+            >
+              Sign In
+            </Button>
+          )}
 
           {accessToken && (
             <>
