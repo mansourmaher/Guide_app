@@ -26,13 +26,15 @@ const TRUNCATE_LENGTH = 30;
 interface Props {
   onTagsAdd: (tag: string) => void;
   updateSecondaryDetails: () => void;
+  initialTags?: string[];
 }
 
 export default function OffreTags({
   onTagsAdd,
   updateSecondaryDetails,
+  initialTags 
 }: Props) {
-  const [skills, setSkills] = useState<string[]>([]);
+  const [skills, setSkills] = useState<string[]>(initialTags || []);
   const [isloading, setIsLoading] = useState(false);
   const [currentSkill, setCurrentSkill] = useState("");
 

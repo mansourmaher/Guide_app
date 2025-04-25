@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import DeleteOffer from "./deleteOffer";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCookies } from "next-client-cookies";
 
 interface Offer {
   _id: string;
@@ -45,13 +46,27 @@ function Offers() {
   const [filteredOffers, setFilteredOffers] = useState<Offer[]>([]);
   const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
   const router = useRouter();
+  const cokkies=useCookies()
+  const token = cokkies.get("token");
+  const id = cokkies.get("id");
 
   useEffect(() => {
     const fetchOffers = async () => {
+  
       try {
-        const res = await AxiosInstance.get("/offres");
-        setOffers(res.data);
-        setFilteredOffers(res.data);
+        const res = await fetch(`http://localhost:4000/offres/byGuide/${id}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) {
+          throw new Error("Failed to fetch offers");
+        }
+        const data = await res.json();
+        setOffers(data);
+        setFilteredOffers(data);
       } catch (err) {
         console.error(err);
       }

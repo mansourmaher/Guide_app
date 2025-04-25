@@ -34,6 +34,7 @@ interface AxiosSignInResponse {
   tokenType: string;
   roles: string[];
   verified: boolean;
+  accountSettet: boolean;
 }
 
 function LoginForm() {
@@ -90,7 +91,7 @@ function LoginForm() {
       //   cookies.set("teacherId", response.data.id.toString(), { secure: true });
       //   router.push("/teacher/courses");
       // }
-      console.log(response);
+      // console.log(response);
       if (response.status === 200) {
         setIsloading(false);
         console.log("You are logged in");
@@ -99,14 +100,19 @@ function LoginForm() {
         cookies.set("accessToken", response.data.access_token, {
           secure: true,
         });
+       
         cookies.set("id", response.data._id, { secure: true });
-        router.push("/setup-account");
+        if (response.data.accountSettet) {
+          router.push("/guide/dashboard");
+        } else {
+          router.push("/setup-account");
+        }
       }
     } catch (error: any) {
       setIsloading(false);
       const axiosError = error as AxiosError;
       if (axiosError.response?.status === 401) {
-        setError("Invalid email or password");
+        setError("Veuillez vérifier votre compte");
       }
       if (axiosError.response?.status === 404) {
         setError("User not found");

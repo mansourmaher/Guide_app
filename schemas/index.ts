@@ -1,3 +1,4 @@
+import { Langar } from 'next/font/google';
 import * as z from 'zod';
 
 
@@ -143,6 +144,54 @@ export const createMessageSchema = z.object({
 
   });
   export type SetupAccountSchemaType = z.infer<typeof setupAccountSchema>;
+  export const PersonelInformationSchema=z.object({
+    fullName: z.string().min(3, {
+      message: "First name must be at least 3 characters long",
+    }),
+    nickname: z.string().min(0, {
+      message: "Please enter a nickname",
+    }),
+    email: z.string().email({ message: "Please enter a valid email" }),
+    phoneNumber: z
+      .string()
+      .length(8, { message: "Phone number must be exactly 8 digits long" }) // Exactly 8 digits
+      .regex(/^[0-9]+$/, {
+        message: "Phone number must contain only digits", // 
+      }),
+    location: z.string().min(1, {
+      message: "Please enter a location",
+    }),
+    about: z.string().min(1, {
+      message: "Please enter a valid about",
+    }),
+    languages: z.array(z.string()).min(1, {
+      message: "Please select at least one language",
+    }),
+    
+
+  })
+  export const ExpertiseInformationSchema=z.object({
+
+    expertise: z.array(z.string()).min(1, {
+      message: "Please select at least one expertise",
+    }),
+    certifications: z.array(z.string()).optional(),
+    guestPreferences: z.array(z.string()).optional(),
+   
+   
+
+  })
+  export const OfferHistorySchema=z.object({
+    title: z.string().min(1, {
+      message: "Please enter a valid offer title",
+    }),
+    content: z.string().min(1, {
+      message: "Please enter a valid offer description",
+    }),
+    images:z.array(z.string()).min(1,{
+      message: "Please enter a valid image url",
+    })
+  })
 
 
 
