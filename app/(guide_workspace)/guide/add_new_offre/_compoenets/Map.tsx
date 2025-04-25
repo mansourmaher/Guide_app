@@ -29,6 +29,7 @@ function DraggableMarker({ center, onChange }: MapProps) {
   const markerRef = useRef(null);
   const map = useMap();
   useEffect(() => {
+    // @ts-ignore
     map.setView(center || position);
   }, [center]);
 
@@ -55,6 +56,7 @@ function DraggableMarker({ center, onChange }: MapProps) {
     <Marker
       draggable={draggable}
       eventHandlers={eventHandlers}
+      // @ts-ignore
       position={center || position}
       ref={markerRef}
     >

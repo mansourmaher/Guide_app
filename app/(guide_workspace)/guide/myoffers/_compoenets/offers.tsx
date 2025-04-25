@@ -122,6 +122,7 @@ function Offers() {
               <Input
                 placeholder="Search offers..."
                 className="w-64"
+                //@ts-ignore
                 onChange={handleFilterOffers}
               />
               <Button variant="outline" size="icon">

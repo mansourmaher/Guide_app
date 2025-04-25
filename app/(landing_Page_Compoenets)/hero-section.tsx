@@ -121,7 +121,7 @@ function HeroSection() {
                 <Badge className="mb-4 bg-blue-100 text-blue-600 hover:bg-blue-200 shadow-sm">
                   <Globe className="h-4 w-4 mr-2" />
                   <span className="font-semibold">
-                    Travelers' Top Choice
+                    Travelers Top Choice
                   </span>
                   <motion.span
                     className="ml-2"

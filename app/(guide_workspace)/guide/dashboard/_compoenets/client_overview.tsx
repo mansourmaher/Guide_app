@@ -104,13 +104,13 @@ export function ClientOverview() {
 
           <TabsContent value="all" className="m-0">
             <div className="text-center py-8 text-muted-foreground">
-              Switch to the "Upcoming Tours" tab to see clients
+              Switch to the Upcoming Tours tab to see clients
             </div>
           </TabsContent>
 
           <TabsContent value="vip" className="m-0">
             <div className="text-center py-8 text-muted-foreground">
-              Switch to the "Upcoming Tours" tab to see clients
+              Switch to the Upcoming Tours tab to see clients
             </div>
           </TabsContent>
         </Tabs>
