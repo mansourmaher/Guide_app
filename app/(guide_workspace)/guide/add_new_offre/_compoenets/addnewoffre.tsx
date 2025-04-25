@@ -9,6 +9,7 @@ import { CountrySelect } from "./country-select";
 import { motion } from "framer-motion";
 import { LocateFixed, MoveLeft, Save } from "lucide-react";
 import { toast, Toaster } from "sonner";
+import { useCookies } from "next-client-cookies";
 
 export interface Latlng {
   lat: number;
@@ -43,6 +44,9 @@ function AddNewOffre() {
     startDate: new Date(),
     endDate: new Date(),
   });
+  const cookkies = useCookies();
+  const token = cookkies.get("token");
+  const id = cookkies.get("id");
   const [latlng, setLatlng] = useState<Latlng>({ lat: 0, lng: 0 });
 
   const [previousStep, setPreviousStep] = React.useState(0);
@@ -51,7 +55,6 @@ function AddNewOffre() {
   const delta = currentStep - previousStep;
 
   const handelSubmit = async () => {
-    
     if (
       offerDetails.imagesUrls.length === 0 ||
       offerDetails.title === "" ||
@@ -85,27 +88,67 @@ function AddNewOffre() {
       toast.error("Number of places should be greater than 0");
       return;
     }
+    // const response = await fetch(
+    //   `http://localhost:4000/users/${id}`,
 
-    const res = await AxiosInstance.post("/offres", {
-      titre: offerDetails.title,
-      description: offerDetails.description,
-      prix: offerSecondaryDetails.price,
-      categorie: offerSecondaryDetails.category,
-      dateDisponible: offerSecondaryDetails.startDate,
-      startDate: offerSecondaryDetails.startDate,
-      endDate: offerSecondaryDetails.endDate,
-      nombrePersonnesMax: offerSecondaryDetails.number_of_places,
-      nombrePersonneCurrent: 0,
-      etat: "ACTIVE",
-      location: [latlng.lat, latlng.lng],
-      photos: offerDetails.imagesUrls,
+    //   {
+    //     method: "PUT",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    //     },
+    //     body: JSON.stringify({
+    //       certifications: certificationList,
+    //       preferredGuests: selectedGuest,
+    //       experiences: selectedExpertise,
+    //     }),
+    //   }
+    // );
+
+    const res = await fetch("http://localhost:4000/offres", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        titre: offerDetails.title,
+        guideId: id,
+        description: offerDetails.description,
+        prix: offerSecondaryDetails.price,
+        categorie: offerSecondaryDetails.category,
+        dateDisponible: offerSecondaryDetails.startDate,
+        startDate: offerSecondaryDetails.startDate,
+        endDate: offerSecondaryDetails.endDate,
+        nombrePersonnesMax: offerSecondaryDetails.number_of_places,
+        nombrePersonneCurrent: 0,
+        etat: "ACTIVE",
+        location: [latlng.lat, latlng.lng],
+        photos: offerDetails.imagesUrls,
+        tags: offerSecondaryDetails.tags,
+      }),
     });
+
     if (res.status === 201) {
       toast.success("Offer added successfully");
+      setOfferDetails({
+        title: "",
+        description: "",
+        imagesUrls: [],
+      });
+      setOfferSecondaryDetails({
+        price: 0,
+        number_of_places: 0,
+        category: "",
+        tags: [],
+        startDate: new Date(),
+        endDate: new Date(),
+      });
+      setLatlng({ lat: 0, lng: 0 });
+      
     } else {
       toast.error("An error occured");
     }
-    
   };
   return (
     <div className="container mx-auto py-6 space-y-8 mt-16">
@@ -117,7 +160,10 @@ function AddNewOffre() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="col-span-2"
           >
-            <OffreDetails onDetailsChange={setOfferDetails} />
+            <OffreDetails
+              onDetailsChange={setOfferDetails}
+              initialValues={offerDetails}
+            />
           </motion.div>
 
           <motion.div
@@ -129,6 +175,7 @@ function AddNewOffre() {
             <div className="flex flex-col space-y-2">
               <OffreSeconaryDeatils
                 onSecondaryDetailsChange={setOfferSecondaryDetails}
+                initialValues={offerSecondaryDetails}
               />
               <div className="flex flex-row justify-between gap-5">
                 <Button

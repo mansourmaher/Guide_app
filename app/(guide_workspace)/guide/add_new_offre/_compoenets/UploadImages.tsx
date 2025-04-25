@@ -89,7 +89,7 @@ function UploadImagesForOffers({
                 <>
                   <ImageIcon className="w-12 h-12 mx-auto text-muted-foreground" />
                   <div className="mt-4">
-                    <Button variant="secondary">
+                    <Button variant="secondary" type="button">
                       <Upload className="w-4 h-4 mr-2" />
                       Upload Image
                     </Button>

@@ -2,7 +2,6 @@
 import {
   Card,
   CardContent,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -15,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -26,7 +24,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Users } from "lucide-react";
 import { format } from "date-fns";
 import {
   Form,
@@ -36,46 +34,65 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Tag, Users } from "lucide-react";
 import OffreTags from "./tags";
-import { table } from "console";
 import { cn } from "@/lib/utils";
+import React from "react";
 
-function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
-  const updateSecondaryDetails = () => {
-    console.log("datra chnaged");
-    const data = form.getValues();
-    onSecondaryDetailsChange(data);
+// Define props interface
+interface OffreSeconaryDeatilsProps {
+  onSecondaryDetailsChange: (data: any) => void;
+  initialValues?: {
+    price?: number;
+    number_of_places?: number;
+    category?: string;
+    tags?: string[];
+    startDate?: Date;
+    endDate?: Date;
   };
-  const schema = z.object({
-    price: z.number().min(0, { message: "Price must be greater than 0" }),
-    number_of_places: z
-      .number()
-      .min(0, { message: "Number of places must be greater than 0" }),
-    category: z.string().min(1, { message: "Please select a category" }),
-    tags: z.array(z.string()),
-    startDate: z.date({
-      required_error: "Start date is required",
-    }),
-    endDate: z.date({
-      required_error: "End date is required",
-    }),
-  });
+}
+
+const schema = z.object({
+  price: z.number().min(0, { message: "Price must be greater than 0" }),
+  number_of_places: z
+    .number()
+    .min(0, { message: "Number of places must be greater than 0" }),
+  category: z.string().min(1, { message: "Please select a category" }),
+  tags: z.array(z.string()),
+  startDate: z.date({
+    required_error: "Start date is required",
+  }),
+  endDate: z.date({
+    required_error: "End date is required",
+  }),
+});
+
+function OffreSeconaryDeatils({ 
+  onSecondaryDetailsChange,
+  initialValues 
+}: OffreSeconaryDeatilsProps) {
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      startDate: new Date(),
-      endDate: new Date(),
-      price: 0,
-      number_of_places: 0,
-      category: "",
-      tags: [],
+      price: initialValues?.price || 0,
+      number_of_places: initialValues?.number_of_places || 0,
+      category: initialValues?.category || "",
+      tags: initialValues?.tags || [],
+      startDate: initialValues?.startDate || new Date(),
+      endDate: initialValues?.endDate || new Date(),
     },
   });
 
-  const onsubmit = async (values: z.infer<typeof schema>) => {};
-  const onTagsAdd = (Tag: string) => {
-    form.setValue("tags", [...form.getValues("tags"), Tag]);
+  // Watch all fields and call onSecondaryDetailsChange when they change
+  React.useEffect(() => {
+    const subscription = form.watch((value) => {
+      onSecondaryDetailsChange(value);
+    });
+    return () => subscription.unsubscribe();
+  }, [form, onSecondaryDetailsChange]);
+
+  const onTagsAdd = (tag: string) => {
+    const currentTags = form.getValues("tags");
+    form.setValue("tags", [...currentTags, tag]);
   };
 
   return (
@@ -90,11 +107,7 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
       </CardHeader>
       <CardContent className="space-y-6">
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onsubmit)}
-            className="space-y-4"
-            onChange={updateSecondaryDetails}
-          >
+          <form className="space-y-4">
             <div className="flex space-x-4">
               <FormField
                 control={form.control}
@@ -125,11 +138,7 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={(date) => {
-                            field.onChange;
-                            form.setValue("startDate", date!);
-                            updateSecondaryDetails();
-                          }}
+                          onSelect={field.onChange}
                           disabled={(date) => date < new Date()}
                           initialFocus
                         />
@@ -168,14 +177,11 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={(date) => {
-                            field.onChange;
-                            form.setValue("endDate", date!);
-                            updateSecondaryDetails();
+                          onSelect={field.onChange}
+                          disabled={(date) => {
+                            const startDate = form.getValues("startDate");
+                            return date < (startDate || new Date());
                           }}
-                          disabled={(date) =>
-                            date < form.getValues("startDate")
-                          }
                           initialFocus
                         />
                       </PopoverContent>
@@ -185,7 +191,7 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
                 )}
               />
             </div>
-            {/* Price Field */}
+
             <div className="space-y-2">
               <FormField
                 control={form.control}
@@ -202,21 +208,21 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
                           className="pl-7"
                           placeholder="99.99"
                           {...field}
-                          value={field.value || ""}
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber)
-                          }
+                          value={field.value}
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber || 0;
+                            field.onChange(value);
+                          }}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage>
-                      {form.formState.errors.price?.message}
-                    </FormMessage>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
             <Separator />
+
             <div className="space-y-2">
               <FormField
                 control={form.control}
@@ -224,109 +230,82 @@ function OffreSeconaryDeatils({ onSecondaryDetailsChange }: any) {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel htmlFor="number_of_places">
-                      Place Available
+                      Places Available
                     </FormLabel>
                     <FormControl>
-                      <div className="relative px-2 ">
+                      <div className="relative px-2">
                         <span className="absolute left-4 top-2.5">
                           <Users size={16} />
                         </span>
                         <Input
-                          id="price"
+                          id="number_of_places"
                           type="number"
                           className="pl-7"
                           placeholder="Number of places"
                           {...field}
-                          value={field.value || ""}
-                          onChange={(e) =>
-                            field.onChange(e.target.valueAsNumber)
-                          }
+                          value={field.value}
+                          onChange={(e) => {
+                            const value = e.target.valueAsNumber || 0;
+                            field.onChange(value);
+                          }}
                         />
                       </div>
                     </FormControl>
-                    <FormMessage>
-                      {form.formState.errors.number_of_places?.message}
-                    </FormMessage>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
             <Separator />
 
-            {/* Difficulty Level Field */}
-
-            {/* Category Field */}
             <div className="space-y-2">
               <FormField
                 control={form.control}
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel htmlFor="category">Category</FormLabel>
+                    <FormLabel>Category</FormLabel>
                     <FormControl>
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
-                        // defaultValue={courseDetail?.category!}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem
-                            value="Historical & Cultural Tours
-"
-                          >
+                          <SelectItem value="Historical & Cultural Tours">
                             Historical & Cultural Tours
                           </SelectItem>
-                          <SelectItem
-                            value="Food & Culinary Tours
-"
-                          >
+                          <SelectItem value="Food & Culinary Tours">
                             Food & Culinary Tours
                           </SelectItem>
-                          <SelectItem
-                            value="Adventure & Outdoor Tours
-"
-                          >
+                          <SelectItem value="Adventure & Outdoor Tours">
                             Adventure & Outdoor Tours
                           </SelectItem>
-                          <SelectItem
-                            value="Wildlife & Nature Tours
-"
-                          >
+                          <SelectItem value="Wildlife & Nature Tours">
                             Wildlife & Nature Tours
                           </SelectItem>
                         </SelectContent>
                       </Select>
                     </FormControl>
-                    <FormMessage>
-                      {form.formState.errors.category?.message}
-                    </FormMessage>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
             <Separator />
 
-            {/* Certificate Field */}
             <OffreTags
               onTagsAdd={onTagsAdd}
-              updateSecondaryDetails={updateSecondaryDetails}
+              initialTags={form.watch("tags")}
+              updateSecondaryDetails={() => {
+                form.setValue("tags", form.getValues("tags"));
+              }}
             />
           </form>
         </Form>
       </CardContent>
-      {/* <CardFooter>
-        <Button
-          className="ml-auto"
-          variant="primary"
-          size="sm"
-          onClick={form.handleSubmit(onsubmit)}
-        >
-          {form.formState.isSubmitting ? "Saving..." : "Save Changes"}
-        </Button>
-      </CardFooter> */}
     </Card>
   );
 }

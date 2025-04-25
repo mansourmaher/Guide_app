@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import type { z } from "zod";
 import { RegisterSchema } from "@/schemas";
 
 import {
@@ -21,7 +21,7 @@ import { SlimLayout } from "./SlimLayout";
 import { Logo } from "./Logo";
 import { FormSucces } from "./Form-succes";
 import { FormError } from "./Form-error";
-import axios, { AxiosError } from "axios";
+import axios, { type AxiosError } from "axios";
 import { Loader } from "lucide-react";
 
 interface AxiosSignInResponse {
@@ -171,13 +171,64 @@ export const RegisterForm = () => {
               </FormItem>
             )}
           />
-          {error ||
-            (success && (
-              <div className="col-span-full my-4">
-                <FormSucces message={success} />
-                <FormError message={error} />
+          {error && (
+            <div className="col-span-full my-4 rounded-lg border border-red-100 bg-red-50 p-4 shadow-sm dark:border-red-900/30 dark:bg-red-900/20">
+              <div className="flex items-center space-x-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-800/60">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-red-600 dark:text-red-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1.293-11.293a1 1 0 00-1.414 0L7.586 9.586a1 1 0 001.414 1.414L10 9.414l2.293 2.293a1 1 0 001.414-1.414l-2.293-2.293zM10 14a1.5 1.5 0 110-3h3a1.5 1.5 0 110 3H10z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <p className="text-sm font-medium text-red-800 dark:text-red-300">
+                  {error}
+                </p>
               </div>
-            ))}
+            </div>
+          )}
+          {success && (
+            <div className="col-span-full my-4 rounded-lg border border-green-100 bg-green-50 p-4 shadow-sm dark:border-green-900/30 dark:bg-green-900/20">
+              <div className="flex flex-col space-y-3">
+                <div className="flex items-center">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 dark:bg-green-800/60">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-green-600 dark:text-green-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="ml-3 text-lg font-medium text-green-800 dark:text-green-300">
+                    Welcome to our travel community!
+                  </h3>
+                </div>
+
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  Your free 30-day subscription is now active. Explore
+                  destinations, find local guides, and plan your perfect trip.
+                </p>
+
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  After 30 days, you'll need to subscribe to one of our plans to
+                  maintain access to all features.
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="col-span-full">
             <Button
