@@ -17,7 +17,7 @@ const checkUserSubscription = async (id:string,accessToken:string) => {
     const endSubscriptionDate = new Date(endsubscribtionData);
     const isExpired = endSubscriptionDate < currentDate;
     if (isExpired) {
-      const response=await fetch(`http://0.0.0.0:4000/subscribtion/${id}`, {
+      const response=await fetch(`http://localhost:4000/subscribtion/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
