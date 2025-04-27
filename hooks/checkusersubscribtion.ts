@@ -46,7 +46,7 @@ const checkUserSubscription = async (id:string,accessToken:string) => {
       console.log("Subscription is active");
       return false; // Subscription is active
     }
-    return data;
+    
   } catch (error) {
     console.error("Error fetching user subscription:", error);
     return null;
