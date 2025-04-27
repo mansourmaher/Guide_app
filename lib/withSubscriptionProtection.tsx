@@ -2,60 +2,70 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useCookies } from "next-client-cookies";
 
-async function checkUserSubscriptionClient() {
-  try {
-    const accessToken = localStorage.getItem("accessToken");
-    const userId = localStorage.getItem("id");
-
-    if (!accessToken || !userId) {
-      return true; // no user, consider expired
+async function checkUserSubscriptionClient(accessToken?: string, id?: string) {
+    if(!accessToken || !id) {
+        const cookies = useCookies();
+        accessToken = cookies.get("accessToken");
+        id = cookies.get("id");
+    }
+    if (!accessToken || !id) {
+      console.error("Access token or user ID not found in cookies.");
+      return null; // or handle the error as needed
     }
 
-    const response = await fetch(`http://localhost:4000/users/${userId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch user data");
-    }
-
-    const data = await response.json();
-    const endSubscriptionDate = new Date(data.subscriptionEndDate);
-    const currentDate = new Date();
-
-    if (endSubscriptionDate < currentDate) {
-      // expired, check second subscription
-      const subResponse = await fetch(
-        `http://localhost:4000/subscribtion/${userId}`,
-        {
+    try {
+        const response = await fetch(`http://localhost:4000/users/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
         }
-      );
-
-      if (!subResponse.ok) {
-        return true; // subscription expired
+        const data = await response.json();
+        const endsubscribtionData=data.subscriptionEndDate
+        const currentDate = new Date();
+        const endSubscriptionDate = new Date(endsubscribtionData);
+        const isExpired = endSubscriptionDate < currentDate;
+        console.log(endSubscriptionDate);
+        console.log(currentDate);
+        if (isExpired) {
+          const response=await fetch(`http://localhost:4000/subscribtion/${id}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          if (!response.ok) {
+            
+            return true;
+          }
+          const data = await response.json();
+          console.log("data",data);
+          const currentDate = new Date();
+          const endSubscriptionDate = new Date(data.validateUntil);
+    
+          if(endSubscriptionDate > currentDate) {
+            console.log("Subscription is active");
+            return false; 
+          }
+    
+          console.log("Subscription has expired");
+          return true; // Subscription is expired
+        } else {
+          console.log("Subscription is active");
+          return false; // Subscription is active
+        }
+        
+      } catch (error) {
+        console.error("Error fetching user subscription:", error);
+        return null;
       }
-
-      const subData = await subResponse.json();
-      const subEndDate = new Date(subData.validateUntil);
-
-      return subEndDate < currentDate; // true = expired
-    }
-
-    return false; // subscription active
-  } catch (error) {
-    console.error("Error checking subscription client:", error);
-    return true; // safer to consider expired
-  }
 }
 
 export function withSubscriptionProtection<P>(
@@ -64,10 +74,13 @@ export function withSubscriptionProtection<P>(
   return function ProtectedComponent(props: P) {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
+    const cookies = useCookies();
+    const accessToken = cookies.get("accessToken");
+    const id = cookies.get("id");
 
     useEffect(() => {
       const check = async () => {
-        const expired = await checkUserSubscriptionClient();
+        const expired = await checkUserSubscriptionClient(accessToken, id);
         if (expired) {
           router.push("/#pricing");
         } else {
