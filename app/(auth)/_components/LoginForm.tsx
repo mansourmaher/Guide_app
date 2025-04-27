@@ -100,8 +100,13 @@ function LoginForm() {
         cookies.set("accessToken", response.data.access_token, {
           secure: true,
         });
-       
+
         cookies.set("id", response.data._id, { secure: true });
+        // @ts-ignore
+        if (response.data.role === "ADMIN") {
+          router.push("/admin/dashboard");
+          return;
+        }
         if (response.data.accountSettet) {
           router.push("/guide/dashboard");
         } else {

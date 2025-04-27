@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import checkUserSubscription from "./hooks/checkusersubscribtion";
+import isAdmin from "./hooks/isAdmin";
 
 const authRoutes = [
   "/login",
@@ -11,6 +12,7 @@ const authRoutes = [
 ];
 
 const publicRoutes = ["/"];
+const adminRoutes=["/admin/dashboard"]
 
 const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
@@ -28,11 +30,18 @@ const middleware = async (request: NextRequest) => {
 
   const accessToken = request.cookies.get("accessToken")?.value;
   const userId = request.cookies.get("id")?.value;
+  if(adminRoutes.includes(pathname) && accessToken) {
+    if(await isAdmin(userId!,accessToken!)===false && accessToken) {
+      console.log("User is not an admin, redirecting to landing page.");
+      return NextResponse.redirect(new URL("/", request.url));
+  }
+  }
 
   
   if (pathname === "/") {
     return NextResponse.next();
   }
+
 
  
   if (!accessToken && !authRoutes.includes(pathname)) {
@@ -59,4 +68,4 @@ const middleware = async (request: NextRequest) => {
   return NextResponse.next();
 };
 
-export default middleware;
+export default middleware

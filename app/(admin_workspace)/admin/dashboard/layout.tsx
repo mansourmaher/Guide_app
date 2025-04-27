@@ -12,7 +12,7 @@ export default function RootLayout({
 }>) {
   return (
     <div className="h-full flex bg-gradient-to-br from-sky-50 to-white dark:from-slate-900 dark:to-slate-800">
-      <Header/>
+      <Header />
       <div className="w-screen bg-slate-50 mt-28  ">{children}</div>
     </div>
   );

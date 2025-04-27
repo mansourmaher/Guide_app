@@ -8,35 +8,26 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import React, { useEffect } from "react";
-import { useCookies } from "next-client-cookies";
 
-export function QuickStats() {
+export function QuisStatsForAdmin() {
   const [totlaoffers, setTotlaOffers] = React.useState(0);
   const [totalClients, setTotlaClients] = React.useState(0);
   const [totalGuides, setTotlaGuides] = React.useState(0);
   const [yearlyEarnings, setYearlyEarnings] = React.useState(0);
-  const [rate, setRate] = React.useState(0);
-  const cookkies = useCookies();
-  const userId = cookkies.get("id");
-
   useEffect(() => {
     const fetchTotalOffers = async () => {
-      const totlaoffers = await fetch(
-        `http://localhost:4000/offres/countActiveOffres/${userId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const totlaoffers = await fetch("http://localhost:4000/offres", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const data = await totlaoffers.json();
-      setTotlaOffers(data.offers);
-      console.log("total offers", data.length);
+      setTotlaOffers(data.length);
     };
     const fetchTotalClients = async () => {
       const totalClients = await fetch(
-        `http://localhost:4000/offres/countNbPersonneCurrentByGuideId/${userId}`,
+        "http://localhost:4000/users/toursitecount/tourists",
         {
           method: "GET",
           headers: {
@@ -45,12 +36,12 @@ export function QuickStats() {
         }
       );
       const data = await totalClients.json();
-      console.log("total clientsssssssssssss", data.nbPersonnes);
-      setTotlaClients(data.nbPersonnes);
+      console.log("total clients", data.count);
+      setTotlaClients(data.count);
     };
-    const fetchTotalRate = async () => {
+    const fetchTotalGuides = async () => {
       const totalGuides = await fetch(
-        `http://localhost:4000/reviews/satisfactionRate/${userId}`,
+        "http://localhost:4000/users/guidecount/guides",
         {
           method: "GET",
           headers: {
@@ -60,11 +51,11 @@ export function QuickStats() {
       );
       const data = await totalGuides.json();
       console.log("total guides", data.count);
-      setRate(data.satisfactionRate);
+      setTotlaGuides(data.count);
     };
     const fetchYearlyEarnings = async () => {
       const yearlyEarnings = await fetch(
-        `http://localhost:4000/payements/totalAmountThisYear/${userId}`,
+        "http://localhost:4000/users/totalearning/year",
         {
           method: "GET",
           headers: {
@@ -74,40 +65,47 @@ export function QuickStats() {
       );
       const data = await yearlyEarnings.json();
       console.log("yearly earnings", data);
-      setYearlyEarnings(data.totalAmount);
+      setYearlyEarnings(data.count);
     };
     fetchTotalOffers();
     fetchTotalClients();
-    fetchTotalRate();
+    fetchTotalGuides();
     fetchYearlyEarnings();
   }, []);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatCard
-        title="Upcoming Tours"
+        title="Total Tours"
         value={totlaoffers}
+        change="+2"
         icon={<Calendar className="h-5 w-5 text-teal-600" />}
       />
       <StatCard
         title="Total Clients"
         value={totalClients}
+        change="+14"
         icon={<Users className="h-5 w-5 text-indigo-600" />}
       />
       <StatCard
-        title="Satisfaction Rate"
-        value={rate+"%"}
+        title="Total guides"
+        value={totalGuides}
+        change="+2.5%"
         icon={<TrendingUp className="h-5 w-5 text-emerald-600" />}
       />
       <StatCard
-        title="Monthly Earnings"
+        title="Yearly Earnings"
         value={yearlyEarnings}
+        change="+$850"
         icon={<DollarSign className="h-5 w-5 text-amber-600" />}
       />
     </div>
   );
 }
 
-function StatCard({ title, value, icon }: any) {
+function StatCard({ title, value, change, icon }: any) {
+  const isPositive = change.startsWith("+");
+
   return (
     <Card>
       <CardContent className="p-6">
@@ -119,6 +117,22 @@ function StatCard({ title, value, icon }: any) {
           <div className="p-2 rounded-full bg-slate-100 dark:bg-slate-800">
             {icon}
           </div>
+        </div>
+        <div className="flex items-center mt-4">
+          <span
+            className={cn(
+              "text-xs font-medium flex items-center",
+              isPositive ? "text-emerald-600" : "text-red-600"
+            )}
+          >
+            {change}
+            <ArrowUpRight
+              className={cn("h-3 w-3 ml-1", !isPositive && "rotate-180")}
+            />
+          </span>
+          <span className="text-xs text-muted-foreground ml-2">
+            vs. last month
+          </span>
         </div>
       </CardContent>
     </Card>
