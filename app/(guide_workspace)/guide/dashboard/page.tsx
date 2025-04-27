@@ -5,6 +5,9 @@ import MapForDashboard from "./_compoenets/MapFordashboard";
 import DashBoardChart from "./_compoenets/bar_chart";
 import React, { useEffect } from "react";
 import { useCookies } from "next-client-cookies";
+import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
+
+
 
 function page() {
   const [revenue, setRevenue] = React.useState({});
@@ -54,4 +57,4 @@ function page() {
   );
 }
 
-export default page;
+export default withSubscriptionProtection(page);
