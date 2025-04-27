@@ -71,6 +71,7 @@ export default function NotificationsMenu() {
     });
     channel.bind("subscribtion", (data: any) => {
       setNotifications((prev) => [...prev, data]);
+      console.log("new subscribtion", data);
     });
     
   }, [userId]);

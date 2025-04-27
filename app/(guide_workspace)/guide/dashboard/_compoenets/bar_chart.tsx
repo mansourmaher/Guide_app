@@ -29,7 +29,7 @@ Chartsjs.register(
   Legend
 );
 
-function DashBoardChart() {
+function DashBoardChart({ data }: { data: Record<string, number | null> }) {
   const [chartData, setChartData] = useState<{
     labels: string[];
     datasets: any[];
@@ -38,56 +38,54 @@ function DashBoardChart() {
     datasets: [],
   });
 
-  const [chartOptions, setChartOptions] = useState({
-    scales: {
-      x: {
-        display: true,
-        title: {
-          display: true,
-          text: "userData ",
-        },
-      },
-      y: {
-        display: true,
-        title: {
-          display: true,
-          text: "Student Count",
-        },
-      },
-    },
-  });
+  const [chartOptions, setChartOptions] = useState({});
 
   useEffect(() => {
-    setChartOptions({
-      scales: {
-        x: {
-          display: true,
-          title: {
-            display: true,
-            text: "Courses",
-          },
-        },
-        y: {
-          display: true,
-          title: {
-            display: true,
-            text: "Revenue",
-          },
-        },
-      },
-    });
+    if (!data) return;
+
+    // Convert null values to 0 for the chart
+    const chartValues = Object.values(data).map(value => value === null ? 0 : value);
+    
     setChartData({
-      labels: [],
+      labels: Object.keys(data),
       datasets: [
         {
-          label: "Revenue",
-          data: [],
-          borderColor: "rgba(53, 162, 235)",
-          backgroundColor: "rgba(53, 162, 235, 0.4)",
+          label: "Revenue ($)",
+          data: chartValues,
+          borderColor: "rgba(53, 162, 235, 1)",
+          backgroundColor: "rgba(53, 162, 235, 0.5)",
         },
       ],
     });
-  }, []);
+
+    setChartOptions({
+      responsive: true,
+      plugins: {
+        legend: {
+          position: "top" as const,
+        },
+        title: {
+          display: true,
+          text: "Monthly Revenue",
+        },
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: "Months",
+          },
+        },
+        y: {
+          title: {
+            display: true,
+            text: "Revenue ($)",
+          },
+          beginAtZero: true,
+        },
+      },
+    });
+  }, [data]);
 
   return (
     <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">

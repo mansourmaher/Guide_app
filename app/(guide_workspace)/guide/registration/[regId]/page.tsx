@@ -49,6 +49,7 @@ function Page({ params }: { params: { regId: string } }) {
   } | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [existedRegistation, setExistedRegistation] = useState<boolean>(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -61,6 +62,7 @@ function Page({ params }: { params: { regId: string } }) {
         }
         if (res.data.length > 0) {
           setExistedRegistation(true);
+          console.log(res.data);
           setOfferDetails(res.data[0].offerId);
           setLoading(false);
         }
@@ -127,6 +129,7 @@ function Page({ params }: { params: { regId: string } }) {
       const res = await AxiosInstance.put(`/reservations/status/${id}`, {
         status: "ACCEPT",
       });
+      console.log(res.statusText);
       if (res.status === 201) {
         toast.success("Reservation accepted successfully");
       }
@@ -159,8 +162,9 @@ function Page({ params }: { params: { regId: string } }) {
           {offerDetails && (
             <div className="text-sm text-muted-foreground">
               {new Date(offerDetails.startDate).toDateString()} •{" "}
-              {offerDetails.nombrePersonneCurrent} available places • $
-              {offerDetails.prix} per person
+              {offerDetails.nombrePersonnesMax -
+                offerDetails.nombrePersonneCurrent}{" "}
+              available places • ${offerDetails.prix} per person
             </div>
           )}
         </CardHeader>

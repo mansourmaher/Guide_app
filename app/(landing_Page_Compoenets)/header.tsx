@@ -1,19 +1,39 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Search, Menu, X, Globe, MapPin } from "lucide-react";
+import {
+  Heart,
+  Search,
+  Menu,
+  X,
+  Globe,
+  MapPin,
+  ExternalLinkIcon,
+  LogOut,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Notification from "./notifications";
 import { useCookies } from "next-client-cookies";
 
-const navItems = ["Home", "Destinations", "Guides", "Contact", "FAQs"];
+const navItems = [
+  { label: "Home", path: "/" },
+  { label: "My offers", path: "/guide/myoffers" },
+  { label: "Add new Offer", path: "/guide/add_new_offre" },
+  { label: "Profile", path: "/setup-account" },
+];
 
 function Header() {
+  const cookies = useCookies();
+  const handleLogout = () => {
+    cookies.remove("accessToken");
+
+    router.push("/");
+  };
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [tierName, setTierName] = useState<string | null>(null);
   const [duration, setDuration] = useState<string | null>(null);
-  const cookies = useCookies();
+
   const userId = cookies.get("id");
   const accessToken = cookies.get("accessToken");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -54,7 +74,7 @@ function Header() {
           }
         });
     }
-  }, [sessionId]);
+  }, [userId]);
 
   const testStripeButton = async () => {
     try {
@@ -88,35 +108,32 @@ function Header() {
         <div className="flex items-center gap-2 sm:gap-3">
           <Globe className="h-6 w-6 text-blue-600" />
           <span className="font-bold text-base sm:text-lg tracking-wide text-gray-800">
-            Wanderly
+            TuniGOO
           </span>
         </div>
 
         {/* Navigation - Desktop */}
         <nav className="hidden md:flex items-center space-x-2">
-          {navItems.map((item) => (
-            <Button
-              key={item}
-              variant="ghost"
-              className="rounded-full text-sm px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition duration-200 ease-in-out"
-            >
-              {item}
-            </Button>
-          ))}
+          {accessToken &&
+            navItems.map((item) => (
+              <Button
+                key={item.label}
+                variant="ghost"
+                className="rounded-full text-sm px-4 py-2 text-gray-700 hover:bg-blue-100 hover:text-blue-600 transition duration-200 ease-in-out"
+                onClick={() => {
+                  router.push(item.path);
+                  setMenuOpen(false);
+                }}
+              >
+                {item.label}
+              </Button>
+            ))}
         </nav>
 
         {/* Actions */}
         <div className="flex items-center gap-2">
           {/* Desktop Icons */}
           <div className="hidden sm:flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full hover:bg-blue-100 hover:text-blue-600 transition duration-200 ease-in-out"
-              aria-label="Search"
-            >
-              <Search className="h-5 w-5" />
-            </Button>
             {accessToken && (
               <>
                 {" "}
@@ -136,7 +153,14 @@ function Header() {
           {accessToken && (
             <>
               {" "}
-              <span>Logout</span>
+              <Button
+                variant="ghost"
+                className="rounded-full bg-blue-600 hover:bg-blue-700 hover:text-white text-white px-4 py-2 text-sm sm:px-5 sm:text-base transition duration-200 ease-in-out"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4 mr-1" />
+                Logout
+              </Button>
             </>
           )}
 
@@ -190,12 +214,12 @@ function Header() {
               <nav className="flex flex-col space-y-2 mt-4">
                 {navItems.map((item) => (
                   <Button
-                    key={item}
+                    key={item.label}
                     variant="ghost"
                     className="justify-start text-gray-800 text-sm hover:bg-blue-100"
                     onClick={() => setMenuOpen(false)}
                   >
-                    {item}
+                    {item.label}
                   </Button>
                 ))}
               </nav>
