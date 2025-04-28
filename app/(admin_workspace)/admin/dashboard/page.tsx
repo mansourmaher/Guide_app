@@ -3,12 +3,27 @@ import DashBoardChart from "@/app/(guide_workspace)/guide/dashboard/_compoenets/
 import { QuickStats } from "@/app/(guide_workspace)/guide/dashboard/_compoenets/quik_stats";
 import React, { useEffect } from "react";
 import { QuisStatsForAdmin } from "../../_compoenets/quik_stats_for_admin";
+import { useCookies } from "next-client-cookies";
+import isAdmin from "@/hooks/isAdmin";
 
 function page() {
   const [revenue, setRevenue] = React.useState({});
   useEffect(() => {
-    console.log("start fetching data");
+    const cokkies = useCookies();
+    const id = cokkies.get("id");
+    const accessToken = cokkies.get("accessToken");
+    if (!accessToken) {
+      window.location.href = "/login";
+    }
+    if (!id) {
+      window.location.href = "/login";
+    }
+
     const fetchData = async () => {
+      const res = await isAdmin(id!, accessToken!);
+      if (res === false) {
+        window.location.href = "/";
+      }
       const revenue = await fetch("http://localhost:4000/subscribtion", {
         method: "GET",
         headers: {

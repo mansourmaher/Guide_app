@@ -1,5 +1,6 @@
 import React from "react";
 import EditOffer from "../_compoenets/EditOffer";
+import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
 
 function page({ params }: { params: { offerId: string } }) {
   return (
@@ -9,4 +10,4 @@ function page({ params }: { params: { offerId: string } }) {
   );
 }
 
-export default page;
+export default withSubscriptionProtection(page);

@@ -1,7 +1,5 @@
 "use client"
 import { QuickStats } from "./_compoenets/quik_stats";
-import { UpcomingTours } from "./_compoenets/upcoming_tours";
-import MapForDashboard from "./_compoenets/MapFordashboard";
 import DashBoardChart from "./_compoenets/bar_chart";
 import React, { useEffect } from "react";
 import { useCookies } from "next-client-cookies";

@@ -1,5 +1,7 @@
 import Offers from "./_compoenets/offers";
+import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
 
-export default function GuideDashboard() {
+const GuideDashboard=()=> {
   return <Offers />;
 }
+export default withSubscriptionProtection(GuideDashboard);

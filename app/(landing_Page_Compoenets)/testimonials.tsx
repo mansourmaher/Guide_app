@@ -12,7 +12,7 @@ const testimonials = [
     role: "Adventure Travelers",
     feedback:
       "Our trekking guide in Nepal was incredible! He showed us hidden trails and local villages we would never have found on our own. The cultural insights made this trip unforgettable.",
-    img: "",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYP-KKtRJXm9qK7k2_PA1utxbxWdpzGIdulQ&s",
     rating: 5,
     icon: <Compass className="h-4 w-4 text-blue-500" />,
   },
@@ -21,7 +21,7 @@ const testimonials = [
     role: "Solo Explorer",
     feedback:
       "The food tour in Bangkok was a game-changer. Our guide took us to authentic street vendors and explained every dish's history. Best culinary experience of my life!",
-    img: "",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYP-KKtRJXm9qK7k2_PA1utxbxWdpzGIdulQ&s",
     rating: 5,
     icon: <MapPin className="h-4 w-4 text-blue-500" />,
   },
@@ -30,7 +30,7 @@ const testimonials = [
     role: "Family Vacationers",
     feedback:
       "Our guide in Rome made history come alive for our kids. The private Colosseum tour was worth every penny - no queues and personalized stories!",
-    img: "",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYP-KKtRJXm9qK7k2_PA1utxbxWdpzGIdulQ&s",
     rating: 5,
     icon: <Globe className="h-4 w-4 text-blue-500" />,
   },
@@ -39,7 +39,7 @@ const testimonials = [
     role: "Cultural Explorer",
     feedback:
       "The artisan workshops in Kyoto were magical. Learning traditional crafts directly from masters gave me such appreciation for Japanese culture.",
-    img: "",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYP-KKtRJXm9qK7k2_PA1utxbxWdpzGIdulQ&s",
     rating: 4,
     icon: <MapPin className="h-4 w-4 text-blue-500" />,
   },
@@ -48,7 +48,7 @@ const testimonials = [
     role: "Honeymooners",
     feedback:
       "Our private boat tour in Santorini at sunset was the most romantic experience. The captain knew all the best secluded spots for swimming and photos!",
-    img: "",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYP-KKtRJXm9qK7k2_PA1utxbxWdpzGIdulQ&s",
     rating: 5,
     icon: <Globe className="h-4 w-4 text-blue-500" />,
   },
