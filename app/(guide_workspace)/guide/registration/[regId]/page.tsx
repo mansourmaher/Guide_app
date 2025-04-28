@@ -1,25 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  MoreVertical,
   Check,
   X,
-  Clock,
-  Ban,
-  Loader2,
-  NotepadTextDashed,
-  AlertCircle,
+  Clock, Loader2, AlertCircle
 } from "lucide-react";
 import AxiosInstance from "@/lib/axiosInstance";
 import { toast } from "sonner";
@@ -284,4 +274,4 @@ function Page({ params }: { params: { regId: string } }) {
   );
 }
 
-export default Page;
+export default withSubscriptionProtection(Page);
