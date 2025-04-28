@@ -18,6 +18,7 @@ import { useCookies } from "next-client-cookies";
 
 const navItems = [
   { label: "Home", path: "/" },
+  { label: "Dashboard", path: "guide/dashboard" },
   { label: "My offers", path: "/guide/myoffers" },
   { label: "Add new Offer", path: "/guide/add_new_offre" },
   { label: "Profile", path: "/setup-account" },
