@@ -1,9 +1,8 @@
 import React from "react";
 import AddNewOffre from "./_compoenets/addnewoffre";
-import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
 
-const page = () => {
+function page() {
   return <AddNewOffre />;
-};
+}
 
-export default withSubscriptionProtection(page);
+export default page;
