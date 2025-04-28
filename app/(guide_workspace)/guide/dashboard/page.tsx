@@ -7,7 +7,7 @@ import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
 
 
 
-function page() {
+const page=()=> {
   const [revenue, setRevenue] = React.useState({});
   const cokkies = useCookies();
   const userId = cokkies.get("id");

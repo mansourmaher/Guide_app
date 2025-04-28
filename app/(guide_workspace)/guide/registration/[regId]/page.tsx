@@ -28,7 +28,7 @@ interface Registration {
   numberOfPersons: number;
 }
 
-function Page({ params }: { params: { regId: string } }) {
+const Page=({ params }: { params: { regId: string } })=> {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [offerDetails, setOfferDetails] = useState<{
     titre: string;
