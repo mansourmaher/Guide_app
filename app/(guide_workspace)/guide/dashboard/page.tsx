@@ -1,13 +1,15 @@
 "use client"
 import { QuickStats } from "./_compoenets/quik_stats";
+import { UpcomingTours } from "./_compoenets/upcoming_tours";
+import MapForDashboard from "./_compoenets/MapFordashboard";
 import DashBoardChart from "./_compoenets/bar_chart";
 import React, { useEffect } from "react";
 import { useCookies } from "next-client-cookies";
-import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
 
 
 
-const page=()=> {
+
+function page() {
   const [revenue, setRevenue] = React.useState({});
   const cokkies = useCookies();
   const userId = cokkies.get("id");
@@ -55,4 +57,4 @@ const page=()=> {
   );
 }
 
-export default withSubscriptionProtection(page);
+export default page;
