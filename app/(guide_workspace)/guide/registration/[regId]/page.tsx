@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
+
 import {
   Check,
   X,
@@ -28,7 +28,7 @@ interface Registration {
   numberOfPersons: number;
 }
 
-const Page=({ params }: { params: { regId: string } })=> {
+function Page({ params }: { params: { regId: string } }) {
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [offerDetails, setOfferDetails] = useState<{
     titre: string;
@@ -274,4 +274,4 @@ const Page=({ params }: { params: { regId: string } })=> {
   );
 }
 
-export default withSubscriptionProtection(Page);
+export default Page;

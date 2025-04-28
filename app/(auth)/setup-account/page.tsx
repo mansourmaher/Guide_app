@@ -4,7 +4,6 @@ import { useCookies } from "next-client-cookies";
 
 import GuideProfileSetup from "../_components/guide_account";
 import { UserModelType } from "@/types";
-import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
 
 function SetupAccount() {
   const cookies = useCookies();
@@ -33,4 +32,4 @@ function SetupAccount() {
   return <GuideProfileSetup user={user} />;
 }
 
-export default withSubscriptionProtection(SetupAccount);
+export default SetupAccount;

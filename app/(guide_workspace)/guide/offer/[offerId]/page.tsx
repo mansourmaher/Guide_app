@@ -1,8 +1,7 @@
 import React from "react";
 import EditOffer from "../_compoenets/EditOffer";
-import { withSubscriptionProtection } from "@/lib/withSubscriptionProtection";
 
-const page=({ params }: { params: { offerId: string } })=> {
+function page({ params }: { params: { offerId: string } }) {
   return (
     <div className="mt-16">
       <EditOffer offerId={params.offerId} />
@@ -10,4 +9,4 @@ const page=({ params }: { params: { offerId: string } })=> {
   );
 }
 
-export default withSubscriptionProtection(page);
+export default page;
